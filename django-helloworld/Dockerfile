@@ -1,7 +1,7 @@
 FROM python:alpine
 
 RUN apk update \
-	&& apk install -y --no-install-recommends \
+	&& apk add -y --no-install-recommends \
 		postgresql-client \
 	&& rm -rf /var/lib/apt/lists/*
 
