@@ -1,8 +1,7 @@
 FROM python:alpine
 
 RUN apk update \
-	&& apk add -y --no-install-recommends \
-		postgresql-client \
+	&& apk add postgresql-client \
 	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
