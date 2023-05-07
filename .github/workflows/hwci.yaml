@@ -1,15 +1,57 @@
 # Hello world application with two images.
 name: Build the "Hello, World!" Django - psql project.
 
-# on:
-#   pull_request:
-#     branches: [main]
-#   push:
-#     branches:
-#       - '!main'
-#     tags:
-#       - 'v*'
-#   pull_request:
-#     branches:
-#       - 'main'
-gg
+on:
+  # pull_request:
+  #   branches: [main]
+  push:
+    branches:
+    - '!main'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the code.
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUBIMAGE }}
+
+      - name: Login to DockerHub
+        if: github.event_name != 'push tag'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Django
+        uses: docker/build-push-action@v4
+        with:
+          context: django-helloworld/
+          push: ${{ github.event_name != 'push tag' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Docker meta for DB
+        id: metadb
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUBIMAGEDB }}
+
+      - name: Build and push postgresql
+        uses: docker/build-push-action@v4
+        with:
+          context: django_psql_img/
+          push: ${{ github.event_name != 'push tag' }}
+          tags: ${{ steps.metadb.outputs.tags }}
+          labels: ${{ steps.metadb.outputs.labels }}
