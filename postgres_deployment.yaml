@@ -29,6 +29,7 @@ spec:
               name: postgres-volume-mount
       volumes:
         - name: postgres-volume-mount
+          # ./pvdata:/var/lib/postgresql/data
           persistentVolumeClaim:
             claimName: postgresql-data-claim
 ---
