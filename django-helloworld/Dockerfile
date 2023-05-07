@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:alpine
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
