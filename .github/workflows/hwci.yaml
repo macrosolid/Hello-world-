@@ -1,0 +1,15 @@
+# Hello world application with two images.
+name: Build the "Hello, World!" Django - psql project.
+
+# on:
+#   pull_request:
+#     branches: [main]
+#   push:
+#     branches:
+#       - '!main'
+#     tags:
+#       - 'v*'
+#   pull_request:
+#     branches:
+#       - 'main'
+gg
