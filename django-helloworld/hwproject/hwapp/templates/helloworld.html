@@ -6,9 +6,10 @@
 
             <h1 class="mb4">
                 {{ firstwordname.firstword }}
-                {{ secondwordname.secondword }} 
+                {{ secondwordname.secondword }}
             </h1>
-
+            <!-- Next_page - only for data in DB - if there no DATA will be an error "DoesNotExist" -->
+            <p><a href="../../{{ next }}/" rel="stylesheet" title="Next_page">Next_page</a></p> 
         </div>
 
 {% endblock %}
