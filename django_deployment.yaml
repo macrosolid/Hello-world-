@@ -19,7 +19,8 @@ spec:
     spec:
       containers:
         - name: django
-          image: macrosolid/djangohw:latest
+          # image: macrosolid/djangohw:latest 
+          image: macrosolid/djangohw:alpine
           imagePullPolicy: Always
           ports:
             - containerPort: 8000

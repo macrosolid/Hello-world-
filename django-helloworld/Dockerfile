@@ -2,7 +2,8 @@ FROM python:alpine
 
 RUN apk update \
 	&& apk add postgresql-client \
-	&& rm -rf /var/lib/apt/lists/*
+	&& rm -rf /var/lib/apt/lists/* 
+	# && apk add python3-setuptools
 
 WORKDIR /usr/src/app
 COPY requirements.txt ./
