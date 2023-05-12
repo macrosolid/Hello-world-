@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
         - name: postgres
+          # Use the latest version of the myapp image
           image: macrosolid/djangohwpsql:latest
           ports:
             - containerPort: 5432
@@ -32,6 +33,32 @@ spec:
           # ./pvdata:/var/lib/postgresql/data
           persistentVolumeClaim:
             claimName: postgresql-data-claim
+          # resource limits added for CPU and memory
+          resources:
+            requests:
+              memory: "250Mi"
+              cpu: "0.5"
+            limits:
+              memory: "500Mi"
+              cpu: "1"
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - "-U"
+                - postgres
+                - "-d"
+                - dbhelloworld
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+      volumes:
+        - name: postgres-volume-mount
+          # ./pvdata:/var/lib/postgresql/data
+          persistentVolumeClaim:
+            claimName: postgresql-data-claim
+      restartPolicy: Always
 ---
 # START Service
 apiVersion: v1

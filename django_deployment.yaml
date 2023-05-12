@@ -38,7 +38,14 @@ spec:
             - name: DATABASE_URL
             # Postgres here must match the PostgreSQL service name you created earlier.
               value: psql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_IP):$(POSTGRES_PORT)/$(POSTGRES_DB)
-          # command: ["python", "manage.py", "migration"]
+          resources:
+            requests:
+              memory: "250Mi"
+              cpu: "0.5"
+            limits:
+              memory: "500Mi"
+              cpu: "1"
+          # restratPolicy: Always
 
 ---
 # START Service
@@ -55,9 +62,9 @@ spec:
     - port: 80 # Port that the service exposes.
       targetPort: 8000
       # Port that the app is receiving requests from via the pod.
-  selector:                 # Selects the set of Pods targeted by the Service.
-#   matchLabels:            # The labels used for Pod selection.
-    # project: dev            # Label for project name.
-    app: django                # Label for the application name.
-    tier: backend           # Label for the tier of t.he application.
+  selector:  # Selects the set of Pods targeted by the Service.
+#   matchLabels:  # The labels used for Pod selection.
+    # project: dev  # Label for project name.
+    app: django  # Label for the application name.
+    tier: backend  # Label for the tier of t.he application.
 # END SERVICE

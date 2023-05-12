@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+  labels:
+    app: myapp
+spec:
+  replicas: 3                          # Set 3 replicas for this deployment
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp-container
+        image: myapp:latest            # Use the latest version of the myapp image
+        ports:
+        - containerPort: 8000          # Expose container port 8000
+        env:
+        - name: DB_HOST
+          value: mydb-service           # Set the database host to mydb-service
+        - name: DB_NAME
+          value: mydb                  # Set the database name to mydb
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-creds          # Use the 'db-creds' secret to get the database user
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-creds          # Use the 'db-creds' secret to get the database password
+              key: password
+      imagePullSecrets:
+        - name: regcred                # Use the 'regcred' secret to pull the myapp image
+---
+# START Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+spec:
+  selector:
+    app: myapp                        # Select pods with the 'myapp' label
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8000                  # Route incoming traffic to container port 8000
+  type: LoadBalancer                  # Use a load balancer to expose the service externally
+# END SERVICE
