@@ -2,7 +2,7 @@ FROM python:alpine
 
 RUN apk update \
 	&& apk add postgresql-client \
-	&& rm -rf /var/lib/apt/lists/* 
+	&& rm -rf /var/lib/apt/lists/* \
   && apk add curl
 
 WORKDIR /usr/src/app
