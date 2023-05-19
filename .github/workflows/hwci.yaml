@@ -26,8 +26,10 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUBIMAGE }}
+          # Use the docker/metadata-action to retrieve metadata about the Docker image.
 
       - name: Login to DockerHub
+        # Only login for events other than pushing a tag
         if: github.event_name != 'push tag'
         uses: docker/login-action@v2
         with:
@@ -47,6 +49,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUBIMAGEDB }}
+          # Use the docker/metadata-action to retrieve metadata about the PostgreSQL 
+          # Docker image.
 
       - name: Build and push postgresql
         uses: docker/build-push-action@v4

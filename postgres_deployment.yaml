@@ -23,8 +23,8 @@ spec:
               value: "postgres"
             - name: POSTGRES_PASSWORD
               value: "ChangeIt1!"
-            - name: POSTGRES_DB
-              value: "dbhelloworld"
+            # - name: POSTGRES_DB  # This part brocke init phase
+            #   value: "dbhelloworld"
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgres-volume-mount

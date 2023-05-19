@@ -1,0 +1,74 @@
+version: '0.1'
+services:
+  postgres:
+    image: macrosolid/djangohwpsql:latest
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "ChangeIt1!"
+      # POSTGRES_DB: "dbhelloworld"
+      # PGDATA: "/var/lib/postgresql/data/pgdata"
+    ports:
+      - 5434:5432
+    # volumes:
+      # - .:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dbhelloworld"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: no
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - postgres
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:5.7
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "macrosolid@bk.ru"
+      PGADMIN_DEFAULT_PASSWORD: "pgadminUser"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:5050"
+      - "443:443"
+      - "81:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - postgres
+
+  postgres_exporter:
+    container_name: exporter_container
+    image: prometheuscommunity/postgres-exporter:v0.10.0
+    environment:
+      DATA_SOURCE_URI: "postgres:5432/habrdb?sslmode=disable"
+      DATA_SOURCE_USER: "habrpguser"
+      DATA_SOURCE_PASS: "pgpwd4habr"
+      PG_EXPORTER_EXTEND_QUERY_PATH: "/etc/postgres_exporter/queries.yaml"
+    volumes:
+      - ./queries.yaml:/etc/postgres_exporter/queries.yaml:ro
+    ports:
+      - "9187:9187"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 500M
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
